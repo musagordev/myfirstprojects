@@ -1,0 +1,66 @@
+{% extends "base_menu.html" %}
+{% load humanize %} <!-- https://docs.djangoproject.com/en/3.0/ref/contrib/humanize -->
+{% load crispy_forms_tags %}
+{% block head %}
+<style>
+.overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: none;
+  background-color: rgba(0,0,0,0.5); /*dim the background*/
+}
+</style>
+{% endblock %}
+{% block content %}
+{% if thing.content_type %}
+<div id="overlay" class="overlay" style="text-align: center;"
+   onclick="document.getElementById('overlay').style.display = 'none';" >
+<img style="width:90%;margin-top: 50px; border:3px solid black;" src="{% url 'favs:thing_picture' thing.id %}">
+</div>
+{% endif %}
+<span style="float: right;">
+({{ thing.updated_at|naturaltime }})
+{% if thing.owner == user %}
+<a href="{% url 'favs:thing_update' thing.id %}"><i class="fa fa-pencil"></i></a>
+<a href="{% url 'favs:thing_delete' thing.id %}"><i class="fa fa-trash"></i></a>
+{% endif %}
+</span>
+<h1>{{ thing.title }}</h1>
+{% if thing.tags.all %}
+<p>Tags:
+  {% for tag in thing.tags.all %}
+  <span style="border:1px grey solid; background-color: LightGreen;">{{ tag }}</span>
+  {% endfor %}
+</p>
+{% endif %}
+{% if thing.content_type %}
+<img style="float:right; max-width:25%;" src="{% url 'favs:thing_picture' thing.id %}"
+    onclick="document.getElementById('overlay').style.display = 'block';">
+{% endif %}
+<p>
+{{ thing.text }}
+</p>
+{% if user.is_authenticated %}
+  <form action="{% url 'favs:thing_comment_create' thing.id %}" method="post">
+    {% csrf_token %}
+    {{ comment_form|crispy }}
+    <input type="submit" value="Submit">
+    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'favs:all' %}';return false;">
+  </form>
+{% endif %}
+{% for comment in comments %}
+<p> {{ comment.text }}
+({{ comment.updated_at|naturaltime }})
+{% if user == comment.owner %}
+<a href="{% url 'favs:thing_comment_delete' comment.id %}"><i class="fa fa-trash"></i></a>
+{% endif %}
+</p>
+{% endfor %}
+<p>
+<a href="{% url 'favs:all' %}">All Forums</a>
+</p>
+{% endblock %}

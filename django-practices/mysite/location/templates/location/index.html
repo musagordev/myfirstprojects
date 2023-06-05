@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8" />
+        <title>Locations</title>
+        <link href="https://google-developers.appspot.com/maps/documentation/javascript/examples/default.css" rel="stylesheet">
+        <script src="https://maps.googleapis.com/maps/api/js"></script>
+        <script>
+            const labels = "123456789";
+            let labelIndex = 0;
+            myData = [
+                [36.7388063,34.5236095, 'Teker Suite'],
+                [36.7855529,34.5974557, 'Altintas Group'],
+                [36.778439,34.5789689, 'Ilbeyi Konaklama'],
+                [36.7793534,34.5641688, 'Imperium Konaklama'],
+                [36.7712886,34.5568262, 'Aria Plus Konaklama'],
+                [36.7713824,34.5427714, 'Boz Suit'],
+                [36.773706,34.5448094, 'Palmiye Gold'],
+                [36.7730301,34.5390466, 'Mersin Kent Konaklama'],
+                [36.7710538,34.5434381, 'Altintas Konaklama']
+                ]
+            function initialize() {
+                var myLatlng = new google.maps.LatLng(36.7713824,34.5427714)
+                var mapOptions = {
+                    zoom: 3,
+                    center: myLatlng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                }
+                var map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+
+                i = 0;
+                var markers = [];
+                for ( pos in myData ) {
+                    i = i + 1;
+                    var row = myData[pos];
+		            window.console && console.log(row);
+                    // if ( i < 3 ) { alert(row); }
+                    var newLatlng = new google.maps.LatLng(row[0], row[1]);
+                    var marker = new google.maps.Marker({
+                        position: newLatlng,
+                        map: map,
+                        label: labels[labelIndex++ % labels.length],
+                        title: row[2]
+                    });
+            markers.push(marker);
+<!-- New options for MarkerClusterer function to display markers -->
+	            var options = {
+			        imagePath: 'http://rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m'
+			        }
+                }
+<!-- New var -->
+	        var markerCluster = new MarkerClusterer(map, markers, options);
+                }
+        </script>
+    </head>
+    <body onload="initialize()">
+        <div id="map_canvas" style="height: 500px"></div>
+        <p><b>About this Map</b></p>
+        <p>
+        This is a map for the most beautiful woman in universe ever see
+        </p>
+        </body>
+</html>
